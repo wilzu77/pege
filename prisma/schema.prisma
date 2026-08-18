@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(cuid())
+  email      String     @unique
+  name       String
+  password   String?    // opsional, untuk login credentials
+  balance    Int        @default(0) // simpan dalam Rupiah
+  topups     Topup[]
+  withdraws  Withdraw[]
+  createdAt  DateTime   @default(now())
+}
+
+model Topup {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int      
+  status    String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  createdAt DateTime @default(now())
+}
+
+model Withdraw {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  amount      Int      // nominal netto yang diterima user
+  fee         Int      // total biaya (tax+qr fee)
+  totalDeduct Int      // amount + fee
+  status      String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  createdAt   DateTime @default(now())
+}
