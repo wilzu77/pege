@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'QRIS Payment Classic',
   description: 'Sistem topup & withdraw QRIS statik',
 };
+
 export default function RootLayout({
   children,
 }: {
